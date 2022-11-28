@@ -13,7 +13,9 @@ interface UserInfo {
 
 export default function Verifica() {
     const router = useRouter()
-    const { id, nome, cognome } = JSON.parse(router.query.user as string) as unknown as UserInfo
+    let user = router.query.user
+    if (user === null) user = "{\"id\": 0, \"nome\":\"Mario\", \"cognome\":\"Rossi\"}"
+    const { id, nome, cognome } = JSON.parse(user as string) as unknown as UserInfo
     const { connected, checkPartecipante, responseCheckPartecipante } = React.useContext(ListContext)
 
     React.useEffect(() => {
