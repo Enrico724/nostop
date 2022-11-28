@@ -1,61 +1,39 @@
-import styles from '../styles/Home.module.css'
+import { Page, Button, Divider, Spacer, Dot, Table } from '@geist-ui/core'
+import { Maximize, Users } from '@geist-ui/icons'
+import Link from 'next/link'
+import React from 'react'
+import { ListContext } from '../lib/contexts/AppContext'
 
 export default function Home() {
+  const { entrati, nonEntrati } = React.useContext(ListContext)
+
   return (
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+    <Page style={{minWidth: "360px"}}>
+      <Link href="/qr-reader" passHref>
+        <Button icon={<Maximize />} width="100%">Scannerizza Invito</Button>
+      </Link>
+      <Spacer h={.5} />
+      <Link href="/lista-invitati" passHref>
+        <Button icon={<Users />} width="100%">Lista Invitati</Button>
+      </Link>
+      <Spacer h={2} />
+      <Divider>
+        <Dot style={{ marginRight: '20px' }} type="success">Entrati</Dot>
+      </Divider>
+      <Spacer h={.5} />
+      <Table data={entrati}>
+        <Table.Column prop="nome" label='nome'/>
+        <Table.Column prop="cognome" label='cognome'/>
+      </Table>
+      <Spacer h={2} />
+      <Divider>
+        <Dot style={{ marginRight: '20px' }} type="error">Non Entrati</Dot>
+      </Divider>
+      <Spacer h={.5} />
+      <Table data={nonEntrati}>
+        <Table.Column prop="nome" label='nome'/>
+        <Table.Column prop="cognome" label='cognome'/>
+      </Table>
+    </Page>
   )
 }

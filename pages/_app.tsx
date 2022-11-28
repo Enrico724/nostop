@@ -1,6 +1,8 @@
 import Head from 'next/head'
-import '../styles/globals.css'
+import { GeistProvider, CssBaseline } from '@geist-ui/core'
 import { AppProps } from 'next/app'
+import adapter from 'webrtc-adapter'
+import { ListProvider } from '../lib/contexts/AppContext'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -14,7 +16,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         />
         <meta name="description" content="Description" />
         <meta name="keywords" content="Keywords" />
-        <title>Next.js PWA Example</title>
+        <title>No Stop List</title>
 
         <link rel="manifest" href="/manifest.json" />
         <link
@@ -30,9 +32,14 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           sizes="32x32"
         />
         <link rel="apple-touch-icon" href="/apple-icon.png"></link>
-        <meta name="theme-color" content="#317EFB" />
+        <meta name="theme-color" content="#000000" />
       </Head>
-      <Component {...pageProps} />
+      <GeistProvider themeType="dark">
+        <CssBaseline />
+        <ListProvider>
+          <Component {...pageProps} />
+        </ListProvider>
+      </GeistProvider>
     </>
   )
 }
