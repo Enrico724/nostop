@@ -28,7 +28,7 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseWithSocket) => {
       socket.broadcast.emit('a user connected')
 
       socket.on('check:partecipante', (id, nome, cognome) => {
-        const user = prisma.user.findFirst({
+        prisma.user.findFirst({
           where: {
             id: id,
             nome: nome,
@@ -50,15 +50,36 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseWithSocket) => {
             }
             socket.emit('get:check:partecipante', false)
           }
+        ).finally(
+          () => {
+            prisma.user.findMany({where: { entrato: true }})
+              .then((entrati) => socket.broadcast.emit('get:entrati', entrati))
+            prisma.user.findMany({where: { entrato: false }})
+              .then((nonEntrati) => socket.broadcast.emit('get:non:entrati', nonEntrati))
+            prisma.user.findMany()
+              .then((partecipanti) => socket.broadcast.emit('get:partecipanti', partecipanti))
+            
+          }
         )
+      })
 
-        prisma.user.findMany({where: { entrato: true }})
-          .then((entrati) => socket.broadcast.emit('get:entrati', entrati))
-        prisma.user.findMany({where: { entrato: false }})
-          .then((nonEntrati) => socket.broadcast.emit('get:non:entrati', nonEntrati))
-        prisma.user.findMany()
-          .then((partecipanti) => socket.broadcast.emit('get:partecipanti', partecipanti))
-        
+      socket.on('aggiungi:invitato', (nome, cognome) => {
+        prisma.user.create({
+          data: {
+            nome: nome,
+            cognome: cognome
+          }
+        }).then(
+          () => {
+            prisma.user.findMany({where: { entrato: true }})
+              .then((entrati) => socket.broadcast.emit('get:entrati', entrati))
+            prisma.user.findMany({where: { entrato: false }})
+              .then((nonEntrati) => socket.broadcast.emit('get:non:entrati', nonEntrati))
+            prisma.user.findMany()
+              .then((partecipanti) => socket.broadcast.emit('get:partecipanti', partecipanti))
+            
+          }
+        )
       })
 
       socket.on('request:entrati', () => {

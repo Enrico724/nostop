@@ -10,6 +10,7 @@ interface List {
     connected: boolean
     checkPartecipante: (id: number, nome: string, cognome: string) => void
     responseCheckPartecipante: boolean | null
+    aggiungiInvitato: (nome: string, cognome: string) => void
 }
 
 const useList = (): List => {
@@ -73,13 +74,23 @@ const useList = (): List => {
         }, 500);
     }
 
+    const aggiungiInvitato = (nome: string, cognome: string) => {
+        if (connected)
+            setTimeout(async () => {
+                await socketInitializer()
+                socket.emit('aggiungi:invitato', nome, cognome)
+        }, 500);
+    }
+
     return {
         entrati,
         nonEntrati,
         partecipanti,
         responseCheckPartecipante,
         checkPartecipante,
-        connected
+        connected,
+        aggiungiInvitato
+
     }
 }
 
