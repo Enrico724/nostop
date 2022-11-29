@@ -5,7 +5,11 @@ export const ListContext = React.createContext<List>({} as List)
 
 export const useListContext = () => useContext(ListContext)
 
-export const ListProvider: React.FC = ({ children }) => {
+type Props = {
+  children: React.ReactNode;
+};
+
+export const ListProvider: React.FC<Props> = ({ children }) => {
   const list = useList()
 
   return <ListContext.Provider value={list}>{children}</ListContext.Provider>

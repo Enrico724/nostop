@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Loading, Page, Spacer } from "@geist-ui/core";
-import QrReader from "react-qr-reader";
 import { useRouter } from 'next/router'
+import dynamic from "next/dynamic";
+const QrReader = dynamic(() => import('react-qr-reader'), { ssr: false })
 
 export default function Scan() {
   const router = useRouter()
