@@ -22,64 +22,37 @@ const useList = (): List => {
     let socket: Socket<DefaultEventsMap, DefaultEventsMap>
 
     React.useEffect(() => {
-        fetch('/api/socketio').then(
-            () => {
-                socket = io()
-                socketInitializer()
-            }
-        )
-
-        return () => {
-            socket.off('connect');
-            socket.off('get:entrati');
-            socket.off('get:partecipanti');
-            socket.off('get:non:entrati');
-            socket.off('get:check:partecipante');
-          };
+        fetch('/api/requestPartecipanti')
+            .then(res => res.json())
+            .then(data => setPartecipanti(data))
+        fetch('/api/requestEntrati')
+            .then(res => res.json())
+            .then(data => setEntrati(data))
+        fetch('/api/requestNonEntrati')
+            .then(res => res.json())
+            .then(data => setNonEntrati(data))
     }, [])
 
-    const socketInitializer = async () => {
-        await fetch('/api/socketio')
-        socket = io()
-        
-        socket.on('connect', () => {
-            isConnected(true)
-            socket.emit('request:partecipanti')
-            socket.emit('request:entrati')
-            socket.emit('request:non:entrati')
-        })
-
-        socket.on('get:entrati', (data) => {
-            setEntrati(data)
-        })
-
-        socket.on('get:partecipanti', (data) => {
-            setPartecipanti(data)
-        })
-
-        socket.on('get:non:entrati', (data) => {
-            setNonEntrati(data)
-        })
-
-        socket.on('get:check:partecipante', (data) => {
-            setResponseCheckPartecipante(data)
-        })
-    }
-
     const checkPartecipante = (id: number, nome: string, cognome: string) => {
-        if (connected)
-            setTimeout(async () => {
-                await socketInitializer()
-                socket.emit('check:partecipante', id, nome, cognome)
-        }, 500);
+        fetch('/api/checkPartecipante', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id, nome, cognome})
+        })
+            .then(res => res.json())
+            .then(data => setResponseCheckPartecipante(data))
     }
 
     const aggiungiInvitato = (nome: string, cognome: string) => {
-        if (connected)
-            setTimeout(async () => {
-                await socketInitializer()
-                socket.emit('aggiungi:invitato', nome, cognome)
-        }, 500);
+        fetch('/api/aggiungiInvitato', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({nome, cognome})
+        })
     }
 
     return {
