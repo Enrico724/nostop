@@ -15,11 +15,10 @@ export default function Verifica() {
     const router = useRouter()
     let user = router.query.user as string || "{\"id\": 0, \"nome\":\"Mario\", \"cognome\":\"Rossi\"}"
     const { id, nome, cognome } = JSON.parse(user) as unknown as UserInfo
-    const { connected, checkPartecipante, responseCheckPartecipante } = React.useContext(ListContext)
+    const { checkPartecipante, responseCheckPartecipante } = React.useContext(ListContext)
 
     React.useEffect(() => {
-        if(connected)
-            checkPartecipante(id, nome, cognome)
+        checkPartecipante(id, nome, cognome)
     }, [])
 
     if (responseCheckPartecipante === true)
